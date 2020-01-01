@@ -67,13 +67,23 @@ class App extends React.Component{
 
   
   render(){
-    const complete={color:"red"}
-    const incomplete={color:"blue"}
+    const complete={      
+    color:"#707070",
+    fontSize:"24px",
+    fontFamily:"cursive",
+    fontStyle:"italic",
+    textDecoration:"line-through"
+    }
+    const incomplete={
+      color:"#000",
+      fontSize:"24px",
+      fontFamily:"cursive"
+  }
       return (
         <div className="container">
           <Header />
           <div className="body">
-            <div class="card">
+            <div className="card">
                 <input 
                 type="text" 
                 name="todotask"
