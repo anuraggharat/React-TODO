@@ -1,127 +1,130 @@
-import React from 'react';
-import Header from './Header'
+import React from "react";
+import { BsPlus, BsTrash } from "react-icons/bs";
+import "./App.css";
 
-import './App.scss';
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      newItem: "",
+      list: [
+        {
+          id: 1,
+          value: "Fuck",
+          isDone: false,
+        },
+        {
+          id: 2,
+          value: "Harder",
+          isDone: false,
+        },
+      ],
+    };
+    this.addItem = this.addItem.bind(this);
+    this.updateInput = this.updateInput.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
+  }
 
-class App extends React.Component{
-
-  constructor(props){
-    
-    super(props)
-    this.state ={
-      newItem:"",
-      list:[]
+  addItem(todoValue) {
+    if (todoValue !== "") {
+      const newItem = {
+        id: Date.now(),
+        value: todoValue,
+        isDone: false,
+      };
+      const list = [...this.state.list];
+      list.push(newItem);
+      this.setState({
+        list,
+        newItem: "",
+      });
     }
-    this.addItem=this.addItem.bind(this)
-    this.updateInput=this.updateInput.bind(this)
-    this.deleteItem=this.deleteItem.bind(this)
   }
-
-  addItem(todoValue){
-    if (todoValue !== ""){
-        const newItem = {
-          id:Date.now(),
-          value:todoValue,
-          isDone:false
-        };
-        const list = [...this.state.list];
-        list.push(newItem);
-        this.setState({
-          list,
-          newItem : ""
-        });
-      }
-  }
-  deleteItem(id){
-    const list =[...this.state.list];
-    const updatedlist =list.filter(item => item.id !== id);
+  deleteItem(id) {
+    const list = [...this.state.list];
+    const updatedlist = list.filter((item) => item.id !== id);
     this.setState({
-      list:updatedlist
+      list: updatedlist,
     });
   }
-  updateInput(input)
-  {
-    this.setState(
-      {
-        newItem:input
-      }
-    )
+  updateInput(input) {
+    this.setState({
+      newItem: input,
+    });
   }
-  checkItem(id){
-    this.setState(prevState => {
-      const updatedTodos = prevState.list.map(todo => {
-          if (todo.id === id) {
-              return {
-                  ...todo,
-                  isDone: !todo.isDone
-              }
-          }
-          return todo
-      })
+  checkItem(id) {
+    this.setState((prevState) => {
+      const updatedTodos = prevState.list.map((todo) => {
+        if (todo.id === id) {
+          return {
+            ...todo,
+            isDone: !todo.isDone,
+          };
+        }
+        return todo;
+      });
       return {
-          list: updatedTodos
-      }
-  })
-  
-}
-
-  
-  render(){
-    const complete={      
-    color:"#707070",
-    fontSize:"24px",
-    fontFamily:"cursive",
-    fontStyle:"italic",
-    textDecoration:"line-through"
-    }
-    const incomplete={
-      color:"#000",
-      fontSize:"24px",
-      fontFamily:"cursive"
+        list: updatedTodos,
+      };
+    });
   }
-      return (
-        <div className="container">
-          <Header />
-          <div className="body">
-            <div className="card">
-                <input 
-                type="text" 
-                name="todotask"
-                placeholder = "Add a new task"
-                required
-                
-                
-                onChange={e => this.updateInput(e.target.value)}
-                value={this.state.newItem}>
-                </input>
-                <button 
-                className="add-btn"
-                onClick={() => this.addItem(this.state.newItem)}> 
-                Add
+
+  render() {
+    const complete = {
+      color: "#707070",
+      fontSize: "24px",
+      fontFamily: "cursive",
+      fontStyle: "italic",
+      textDecoration: "line-through",
+    };
+    const incomplete = {
+      color: "#000",
+      fontSize: "24px",
+      fontFamily: "cursive",
+    };
+    return (
+      <div className="container">
+        <div className="card">
+          <input
+            type="text"
+            name="todotask"
+            placeholder="Add a new task"
+            className="todo"
+            required
+            onChange={(e) => this.updateInput(e.target.value)}
+            value={this.state.newItem}
+          ></input>
+          <button
+            className="add-btn"
+            onClick={() => this.addItem(this.state.newItem)}
+          >
+            <BsPlus className="fa-3x " />
+          </button>
+        </div>
+        <div>
+          {this.state.list.map((item, key) => {
+            return (
+              <div className="item" key={key}>
+                <input
+                  type="checkbox"
+                  className="checkbox"
+                  checked={item.isDone}
+                  onChange={() => this.checkItem(item.id)}
+                ></input>
+                <p style={item.isDone ? complete : incomplete}>{item.value}</p>
+                <button
+                  className="delete-btn"
+                  onClick={() => this.deleteItem(item.id)}
+                >
+                  <BsTrash className="fa-2x color-red " />
                 </button>
-            </div>
-            <div className="card">
-            <h1>
-                TASKS TO BE DONE
-            </h1>
-            <ul>
-              {this.state.list.map(item =>{
-                return (
-                <li key ={item.id} style={item.isDone ? complete : incomplete} ><input type="checkbox" checked={item.isDone} onChange={()=>this.checkItem(item.id)}></input>{item.value}<button className="delete-btn" onClick={() => this.deleteItem(item.id)}>delete</button></li>
-                )}
-                )}
-                
-            </ul>
-            </div>
-
+              </div>
+            );
+          })}
         </div>
-        </div>
-
-
-    )}
+      </div>
+    );
+  }
 }
-
-
-
 
 export default App;
