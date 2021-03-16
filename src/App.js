@@ -10,12 +10,12 @@ class App extends React.Component {
       list: [
         {
           id: 1,
-          value: "Fuck",
+          value: "Start writing",
           isDone: false,
         },
         {
           id: 2,
-          value: "Harder",
+          value: "Work More",
           isDone: false,
         },
       ],
