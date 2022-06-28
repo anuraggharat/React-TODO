@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { BsPlus, BsTrash } from "react-icons/bs";
 import "./App.css";
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      newItem: "",
-      list: [
+
+export default function App() {
+
+
+  const[todos,setTodos]=useState([
         {
           id: 1,
           value: "Start writing",
@@ -18,113 +17,88 @@ class App extends React.Component {
           value: "Work More",
           isDone: false,
         },
-      ],
-    };
-    this.addItem = this.addItem.bind(this);
-    this.updateInput = this.updateInput.bind(this);
-    this.deleteItem = this.deleteItem.bind(this);
-  }
+      ])
+    
+  const[newTodo,setNewTodo] = useState("")
 
-  addItem(todoValue) {
+function  addItem(todoValue) {
     if (todoValue !== "") {
       const newItem = {
-        id: Date.now(),
+        id: todos.length +1,
         value: todoValue,
         isDone: false,
       };
-      const list = [...this.state.list];
+      const list = [...todos];
       list.push(newItem);
-      this.setState({
-        list,
-        newItem: "",
-      });
+          setTodos(list);
+
     }
+    setNewTodo("")
   }
-  deleteItem(id) {
-    const list = [...this.state.list];
+  function deleteItem(id) {
+    const list = [...todos];
     const updatedlist = list.filter((item) => item.id !== id);
-    this.setState({
-      list: updatedlist,
-    });
-  }
-  updateInput(input) {
-    this.setState({
-      newItem: input,
-    });
-  }
-  checkItem(id) {
-    this.setState((prevState) => {
-      const updatedTodos = prevState.list.map((todo) => {
-        if (todo.id === id) {
-          return {
-            ...todo,
-            isDone: !todo.isDone,
-          };
-        }
-        return todo;
-      });
-      return {
-        list: updatedTodos,
-      };
-    });
+    setTodos(updatedlist)
   }
 
-  render() {
-    const complete = {
-      color: "#707070",
-      fontSize: "24px",
-      fontFamily: "cursive",
-      fontStyle: "italic",
-      textDecoration: "line-through",
-    };
-    const incomplete = {
-      color: "#000",
-      fontSize: "24px",
-      fontFamily: "cursive",
-    };
-    return (
-      <div className="container">
-        <div className="card">
-          <input
-            type="text"
-            name="todotask"
-            placeholder="Add a new task"
-            className="todo"
-            required
-            onChange={(e) => this.updateInput(e.target.value)}
-            value={this.state.newItem}
-          ></input>
-          <button
-            className="add-btn"
-            onClick={() => this.addItem(this.state.newItem)}
-          >
-            <BsPlus className="fa-3x " />
-          </button>
-        </div>
-        <div>
-          {this.state.list.map((item, key) => {
-            return (
-              <div className="item" key={key}>
-                <input
-                  type="checkbox"
-                  className="checkbox"
-                  checked={item.isDone}
-                  onChange={() => this.checkItem(item.id)}
-                ></input>
-                <p style={item.isDone ? complete : incomplete}>{item.value}</p>
-                <button
-                  className="delete-btn"
-                  onClick={() => this.deleteItem(item.id)}
-                >
-                  <BsTrash className="fa-2x color-red " />
-                </button>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
+  function updateInput(input) {
+    setNewTodo(input)
   }
+  function checkItem(id) {
+    const list = [...todos]
+    list.map((item)=>{
+      if(item.id == id){
+        item.isDone= !todos[item.id-1].isDone
+      }
+    })
+    setTodos(list)
+  }
+      const complete = {
+        color: "#707070",
+        fontSize: "24px",
+        fontFamily: "cursive",
+        fontStyle: "italic",
+        textDecoration: "line-through",
+      };
+      const incomplete = {
+        color: "#000",
+        fontSize: "24px",
+        fontFamily: "cursive",
+      };
+
+  return (
+    <div className="container">
+      <div className="card">
+        <input
+          type="text"
+          name="todotask"
+          placeholder="Add a new task"
+          className="todo"
+          required
+          onChange={(e) => updateInput(e.target.value)}
+          value={newTodo}
+        ></input>
+        <button className="add-btn" onClick={() => addItem(newTodo)}>
+          <BsPlus className="fa-3x " />
+        </button>
+      </div>
+      <div>
+        {todos.map((item, key) => (
+          <div className="item" key={key}>
+            <input
+              type="checkbox"
+              className="checkbox"
+              checked={item.isDone}
+              onChange={() => checkItem(item.id)}
+            ></input>
+            <p style={item.isDone ? complete : incomplete}>{item.value}</p>
+            <button className="delete-btn" onClick={() => deleteItem(item.id)}>
+              <BsTrash className="fa-2x color-red " />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
-export default App;
